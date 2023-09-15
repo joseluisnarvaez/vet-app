@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Tabla from '../tablas/tablaComponente';
 import axios from 'axios';
+import Menu from '../template/menu';
 
 const options = [
 
@@ -32,6 +33,7 @@ const App = () => {
   return (
     
       <>  
+        <Menu></Menu>
          <Tabla data={categoriaData}></Tabla>
 
     </>

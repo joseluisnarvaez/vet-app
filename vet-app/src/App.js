@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginComponent from './componentes/login';
 import ProductosComponent from './componentes/productos/productos'; 
+import Offcanvas from './componentes/template/offcanvas'; 
 
 // Función de verificación de sesión (puedes personalizarla según tus necesidades)
 const isAuthenticated = () => {
@@ -21,6 +22,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginComponent />} />
+        <Route path="/login" element={<LoginComponent />} />
+        <Route path="/cam" element={<Offcanvas />} />
         <Route path="/productos" element={<ProtectedRoute element={<ProductosComponent />} />}/>
       </Routes>
     </Router>
