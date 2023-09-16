@@ -2,13 +2,13 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 
-const Tabla = ({ data, paginaActual, cantidadPaginas, cantidadPorPagina , funCambioPagina}) => {
+const Tabla = ({ data, paginaActual, cantidadPaginas, cantidadPorPagina , funCambioPagina} ) => {
   if (!data || data.length === 0) {
     return <p>No hay datos para mostrar.</p>;
   }
 
   const headers = Object.keys(data[0]);
-
+  paginaActual++;
   // Calcula la página anterior y siguiente
   const paginaAnterior = paginaActual > 1 ? paginaActual - 1 : 1;
   const paginaSiguiente = paginaActual < cantidadPaginas ? paginaActual + 1 : cantidadPaginas;
@@ -18,7 +18,7 @@ const Tabla = ({ data, paginaActual, cantidadPaginas, cantidadPorPagina , funCam
   const endIndex = Math.min(startIndex + cantidadPorPagina, data.length);
 
   // Filtra los datos para mostrar solo los de la página actual
-  const datosPaginados = data.slice(startIndex, endIndex);
+  const datosPaginados = data;
 
   const handlePaginaClick = (pagina) => {
     funCambioPagina(pagina);

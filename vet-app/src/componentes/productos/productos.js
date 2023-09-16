@@ -16,6 +16,8 @@ const App = () => {
   };
 
   const funCambioPaginaCategoria = (pagina) => {
+
+    console.log(pagina);
     axios.get(`http://localhost:8080/categoria/listar?page=${pagina}`, { headers })
     .then(function (response) {
       console.log(JSON.stringify(response.data));
@@ -26,7 +28,11 @@ const App = () => {
     });
   };
   const funCambioPaginaProducto = (pagina) => {
-    axios.get(`http://localhost:8080/productos/listar?page=${pagina}`, { headers })
+    pagina = pagina-1;
+    console.log(pagina);
+    const url = `http://localhost:8080/productos/listar?page=${pagina}`;
+    console.log(url);
+    axios.get(url, { headers })
       .then(function (response) {
         setProductosData(response.data);
       })
@@ -35,6 +41,7 @@ const App = () => {
       });
   };
   const funCambioPaginaSubCategoria = (pagina) => {
+    console.log(pagina);
     axios.get(`http://localhost:8080/subcategorias/listar${pagina}`, { headers })
     .then(function (response) {
       setSubCategoriaData(response.data);
@@ -82,13 +89,13 @@ const App = () => {
         className="mb-3"
       >
         <Tab eventKey="Categoria" title="Categoria">
-          {activeTab === 'Categoria' && <Tabla data={categoriaData.listaCategorias} {...categoriaData} {...funCambioPaginaCategoria}/>}
+          {activeTab === 'Categoria' && <Tabla data={categoriaData.listaCategorias} {...categoriaData}  funCambioPagina = {funCambioPaginaCategoria}/>}
         </Tab>
         <Tab eventKey="SubCategoria" title="SubCategoria">
-          {activeTab === 'SubCategoria' && <Tabla data={SubCategoriaData.listaSubCategorias} {...categoriaData} {...funCambioPaginaSubCategoria} />}
+          {activeTab === 'SubCategoria' && <Tabla data={SubCategoriaData.listaSubCategorias} {...categoriaData} funCambioPagina = {funCambioPaginaSubCategoria} />}
         </Tab>
         <Tab eventKey="Productos" title="Productos">
-          {activeTab === 'Productos' && <Tabla data={productosData.listaProductos} {...productosData} {...funCambioPaginaProducto} />}
+          {activeTab === 'Productos' && <Tabla data={productosData.listaProductos} {...productosData}   funCambioPagina = {funCambioPaginaProducto}/>}
         </Tab>
       </Tabs>
     </>
