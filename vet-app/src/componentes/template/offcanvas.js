@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
+import Modal from  '../modals/modal'
+import { formularioCategoria } from '../configuracion/formularios';
 const options = [
 
   {
@@ -18,12 +20,16 @@ function OffCanvasExample({ name, ...props }) {
 
   const handleClose = () => setShow(false);
   const toggleShow = () => setShow((s) => !s);
-
+  formularioCategoria.handleClose = () => {
+    console.log("cerrando");
+    setShow(false); 
+  };
   return (
     <>
       <Button variant="primary" onClick={toggleShow} className="me-2">
         {name}
       </Button>
+      <Modal data =  {formularioCategoria} />
       <Offcanvas show={show} onHide={handleClose} {...props}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Offcanvas</Offcanvas.Title>

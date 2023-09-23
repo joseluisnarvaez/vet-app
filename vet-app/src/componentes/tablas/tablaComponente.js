@@ -12,12 +12,6 @@ const Tabla = ({ data, paginaActual, cantidadPaginas, cantidadPorPagina , funCam
   // Calcula la página anterior y siguiente
   const paginaAnterior = paginaActual > 1 ? paginaActual - 1 : 1;
   const paginaSiguiente = paginaActual < cantidadPaginas ? paginaActual + 1 : cantidadPaginas;
-
-  // Calcula los índices para mostrar los datos de la página actual
-  const startIndex = (paginaActual - 1) * cantidadPorPagina;
-  const endIndex = Math.min(startIndex + cantidadPorPagina, data.length);
-
-  // Filtra los datos para mostrar solo los de la página actual
   const datosPaginados = data;
 
   const handlePaginaClick = (pagina) => {

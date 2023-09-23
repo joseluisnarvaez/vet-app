@@ -4,19 +4,23 @@ import axios from 'axios';
 import Menu from '../template/menu';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import Modal from  '../modals/modal'
+import { formularioCategoria, formularioSubCategoria , formularioProducto} from '../configuracion/formularios';
 
 const App = () => {
   const [categoriaData, setCategoriaData] = useState({});
   const [SubCategoriaData, setSubCategoriaData] = useState({});
   const [activeTab, setActiveTab] = useState('Categoria'); // Estado para rastrear la pestaña activa
   const [productosData, setProductosData] = useState({}); 
-
   const headers = {
-    'Authorization': localStorage.getItem('token')
+    'Authorization': localStorage.getItem('token'),
+    'Content-Type': 'application/json'
   };
+  
+
 
   const funCambioPaginaCategoria = (pagina) => {
-
+    pagina = pagina-1;
     console.log(pagina);
     axios.get(`http://localhost:8080/categoria/listar?page=${pagina}`, { headers })
     .then(function (response) {
@@ -41,8 +45,9 @@ const App = () => {
       });
   };
   const funCambioPaginaSubCategoria = (pagina) => {
+    pagina = pagina-1;
     console.log(pagina);
-    axios.get(`http://localhost:8080/subcategorias/listar${pagina}`, { headers })
+    axios.get(`http://localhost:8080/subcategorias/listar?page=${pagina}`, { headers })
     .then(function (response) {
       setSubCategoriaData(response.data);
     })
@@ -50,6 +55,14 @@ const App = () => {
       console.log(error);
     });
   };
+
+  formularioCategoria.url= 'http://localhost:8080/categoria';
+  formularioCategoria.updateTabla = (pagina) => {  funCambioPaginaCategoria(0);};
+  formularioSubCategoria.updateTabla = (pagina) => {  funCambioPaginaSubCategoria(0);};
+  formularioSubCategoria.url= 'http://localhost:8080/subcategorias';
+  formularioProducto.updateTabla = (pagina) => {  funCambioPaginaProducto(0);};
+  formularioProducto.url= 'http://localhost:8080/productos';  
+
   useEffect(() => {
     // Realiza la solicitud GET cuando el componente se monte
     axios.get('http://localhost:8080/categoria/listar', { headers })
@@ -89,15 +102,20 @@ const App = () => {
         className="mb-3"
       >
         <Tab eventKey="Categoria" title="Categoria">
+          <Modal formulario = {formularioCategoria} />
           {activeTab === 'Categoria' && <Tabla data={categoriaData.listaCategorias} {...categoriaData}  funCambioPagina = {funCambioPaginaCategoria}/>}
         </Tab>
         <Tab eventKey="SubCategoria" title="SubCategoria">
-          {activeTab === 'SubCategoria' && <Tabla data={SubCategoriaData.listaSubCategorias} {...categoriaData} funCambioPagina = {funCambioPaginaSubCategoria} />}
+        <Modal formulario =  {formularioSubCategoria} />
+          {activeTab === 'SubCategoria' && <Tabla data={SubCategoriaData.listaSubCategorias} {...SubCategoriaData} funCambioPagina = {funCambioPaginaSubCategoria} />}
         </Tab>
         <Tab eventKey="Productos" title="Productos">
+        
+          <Modal formulario =  {formularioProducto} />
           {activeTab === 'Productos' && <Tabla data={productosData.listaProductos} {...productosData}   funCambioPagina = {funCambioPaginaProducto}/>}
         </Tab>
       </Tabs>
+      
     </>
   );
 };
