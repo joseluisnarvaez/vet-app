@@ -11,6 +11,7 @@ const ModalComponente = ({ formulario }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [variant, setvariant] = useState('');
     const [mensajeAlert, setMensajeAlert] = useState('');
+    
     const handleClose = () => {
         setShow(false);
     };
@@ -44,7 +45,11 @@ const ModalComponente = ({ formulario }) => {
         
     };
 
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        // Limpiar el formulario estableciendo formData a un objeto vacío
+        setFormData({});
+        setShow(true);
+    };
 
     // Función para manejar cambios en los campos del formulario y actualizar el estado formData
     const handleFormChange = (event, index) => {

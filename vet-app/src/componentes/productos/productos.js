@@ -56,6 +56,29 @@ const App = () => {
     });
   };
 
+  async function eliminarElemento(apiUrl, headers) {
+    let eliminado = false;
+  
+    try {
+      const response = await axios.delete(apiUrl, { headers });
+      eliminado = true;
+      console.log('Elemento eliminado con éxito');
+    } catch (error) {
+      eliminado = false;
+      console.error('Error al eliminar el elemento:', error);
+    }
+  
+    return eliminado;
+  }
+
+  const funEliminar= async (id, url) => {
+    const apiUrl = url +'/'+ id;
+    let eliminado = false;
+    eliminado = await eliminarElemento(apiUrl, headers);
+    return eliminado;
+
+  };
+
   formularioCategoria.url= 'http://localhost:8080/categoria';
   formularioCategoria.updateTabla = (pagina) => {  funCambioPaginaCategoria(0);};
   formularioSubCategoria.updateTabla = (pagina) => {  funCambioPaginaSubCategoria(0);};
@@ -103,16 +126,16 @@ const App = () => {
       >
         <Tab eventKey="Categoria" title="Categoria">
           <Modal formulario = {formularioCategoria} />
-          {activeTab === 'Categoria' && <Tabla data={categoriaData.listaCategorias} {...categoriaData}  funCambioPagina = {funCambioPaginaCategoria}/>}
+          {activeTab === 'Categoria' && <Tabla data={categoriaData.listaCategorias} {...categoriaData}  funCambioPagina = {funCambioPaginaCategoria} funEliminar={funEliminar} url={formularioCategoria.url} />}
         </Tab>
         <Tab eventKey="SubCategoria" title="SubCategoria">
         <Modal formulario =  {formularioSubCategoria} />
-          {activeTab === 'SubCategoria' && <Tabla data={SubCategoriaData.listaSubCategorias} {...SubCategoriaData} funCambioPagina = {funCambioPaginaSubCategoria} />}
+          {activeTab === 'SubCategoria' && <Tabla data={SubCategoriaData.listaSubCategorias} {...SubCategoriaData} funCambioPagina = {funCambioPaginaSubCategoria} funEliminar={funEliminar} url={formularioSubCategoria.url}/>}
         </Tab>
         <Tab eventKey="Productos" title="Productos">
         
           <Modal formulario =  {formularioProducto} />
-          {activeTab === 'Productos' && <Tabla data={productosData.listaProductos} {...productosData}   funCambioPagina = {funCambioPaginaProducto}/>}
+          {activeTab === 'Productos' && <Tabla data={productosData.listaProductos} {...productosData}   funCambioPagina = {funCambioPaginaProducto} funEliminar={funEliminar} url={formularioProducto.url}/>}
         </Tab>
       </Tabs>
       
