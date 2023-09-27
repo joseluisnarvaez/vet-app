@@ -68,6 +68,13 @@ export const formularioProducto = {
       value: ''
     },
     {
+      label: 'Segundo Nombre',
+      name: 'lastname',
+      type: 'text',
+      placeholder: 'Ingrese Segundo nombre',
+      value: ''
+    },
+    {
       label: 'abreviacion',
       type: 'text',
       placeholder: 'Ingrese abreviacion',

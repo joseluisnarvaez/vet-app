@@ -68,6 +68,7 @@ const Tabla = ({ data, paginaActual, cantidadPaginas, cantidadPorPagina, funCamb
             {headers.map((header, index) => (
               <th key={index}>{header}</th>
             ))}
+              <th ></th>
           </tr>
         </thead>
         <tbody>
