@@ -61,6 +61,7 @@ const App = () => {
   
     try {
       const response = await axios.delete(apiUrl, { headers });
+      console.log(response.data);
       eliminado = true;
       console.log('Elemento eliminado con éxito');
     } catch (error) {

@@ -3,47 +3,62 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-import Alert from 'react-bootstrap/Alert';
+import AlertaComponente from '../alertas/alerta';
 
 const ModalComponente = ({ formulario }) => {
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({}); // Estado para almacenar el JSON del formulario
-    const [showAlert, setShowAlert] = useState(false);
-    const [variant, setvariant] = useState('');
-    const [mensajeAlert, setMensajeAlert] = useState('');
+    const [mostrarAlerta, setMostrarAlerta] = useState(false);
+    const [alertaVariante, setAlertaVariante] = useState('success');
+    const [alertaMensaje, setAlertaMensaje] = useState('');
     
     const handleClose = () => {
         setShow(false);
     };
 
-    const sendPost = () => {
-        // Obtener el token del localStorage
-        const token = localStorage.getItem('token');
-        const headers = {
+    const sendPost = async () => {
+        try {
+          // Obtener el token del localStorage
+          const token = localStorage.getItem('token');
+          const headers = {
             'Authorization': token,
             'Content-Type': 'application/json'
-        };
-        console.log("Cerrando y enviando el formulario JSON:", formData);
+          };
+          
+          console.log("Cerrando y enviando el formulario JSON:", formData);
+          
+          // Realizar la solicitud POST a la URL de forma asíncrona utilizando async/await
+          const response = await axios.post(formulario.url, formData, { headers });
+          
+            console.log('Respuesta del servidor:', response.data);
+            setAlertaVariante('success');
+            setAlertaMensaje('Guardado con éxito');
+            setMostrarAlerta(true);
 
-        // Realizar la solicitud POST a la URL
-        axios.post(formulario.url, formData, { headers })
-            .then(response => {
-                console.log('Respuesta del servidor:', response.data);
-                setvariant('success') ;
-                setMensajeAlert('Se guardo correctamente');
-                formulario.updateTabla(0);
-                setShow(false);
-            })
-            .catch(error => {
-                console.error('Error al enviar el formulario:', error);
-                setvariant('danger') ;
-                setMensajeAlert( 'Error al guardar');
-                
-            });
-
-            setShowAlert(true);
-        
-    };
+          formulario.updateTabla(0);
+          const timeoutId = setTimeout(() => {
+            setShow(false);
+            },  5000);
+    
+            return () => {
+            clearTimeout(timeoutId);
+            };
+          
+        } catch (error) {
+             // Verificar si la respuesta contiene errores específicos
+            if (error.response && error.response.data) {
+                const errores = error.response.data;
+                const mensajeError = Object.values(errores).join(', '); // Concatenar mensajes de error
+                setAlertaMensaje(`Error al guardar: ${mensajeError}`);
+            } else {
+                setAlertaMensaje('Error al guardar');
+            }
+            
+            setAlertaVariante('danger');
+            setMostrarAlerta(true);
+        }
+        apagarAlerta()
+      };
 
     const handleShow = () => {
         // Limpiar el formulario estableciendo formData a un objeto vacío
@@ -59,6 +74,18 @@ const ModalComponente = ({ formulario }) => {
         setFormData(updatedFormData);
     };
 
+    const apagarAlerta = () => {
+        
+        const timeoutId = setTimeout(() => {
+            setMostrarAlerta(false);
+        },  5000);
+    
+        return () => {
+          clearTimeout(timeoutId);
+        };
+    }
+
+
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
@@ -70,6 +97,7 @@ const ModalComponente = ({ formulario }) => {
                     <Modal.Title>{formulario.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                  {mostrarAlerta && <AlertaComponente variant={alertaVariante} mensajeAlert={alertaMensaje} mostrarAlerta={mostrarAlerta} />}
                     <Form>
                         {formulario.formulario.map((form, index) => (
                             <Form.Group className="mb-3" controlId={form.name} key={index}>
@@ -106,18 +134,6 @@ const ModalComponente = ({ formulario }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Alert show={showAlert} variant={variant} >
-                <Alert.Heading>My Alert</Alert.Heading>
-                <p>
-                    {mensajeAlert}
-                </p>
-                <hr />
-                <div className="d-flex justify-content-end">
-                    <Button onClick={() => setShowAlert(false)} variant="outline-success">
-                        Close me
-                    </Button>
-                </div>
-            </Alert>
         </>
     );
 };

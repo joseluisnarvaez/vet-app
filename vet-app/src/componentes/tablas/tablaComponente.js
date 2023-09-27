@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -45,12 +45,23 @@ const Tabla = ({ data, paginaActual, cantidadPaginas, cantidadPorPagina, funCamb
       setAlertaMensaje('Error al eliminar');
       setMostrarAlerta(true);
     }
+    apagarAlerta();
   };
+  const apagarAlerta = () => {
+        
+    const timeoutId = setTimeout(() => {
+        setMostrarAlerta(false);
+    },  5000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+}
 
   return (
     <>
  
-     {mostrarAlerta && <AlertaComponente variant={alertaVariante} mensajeAlert={alertaMensaje} />}
+     {mostrarAlerta && <AlertaComponente variant={alertaVariante} mensajeAlert={alertaMensaje}  mostrarAlerta={mostrarAlerta} />}
       <Table responsive="xl" striped="columns">
         <thead>
           <tr>
