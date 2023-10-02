@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginComponent from './componentes/login';
-import ProductosComponent from './componentes/productos/productos'; 
-import Offcanvas from './componentes/template/offcanvas'; 
+import Routers from './Routers';
+import Dashboard from './pages/Dashboard';
 
 // Función de verificación de sesión (puedes personalizarla según tus necesidades)
 const isAuthenticated = () => {
@@ -17,16 +16,13 @@ const ProtectedRoute = ({ element }) => {
     return <Navigate to="/" />;
   }
 };
+
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginComponent />} />
-        <Route path="/login" element={<LoginComponent />} />
-        <Route path="/cam" element={<Offcanvas />} />
-        <Route path="/productos" element={<ProtectedRoute element={<ProductosComponent />} />}/>
-      </Routes>
-    </Router>
+    <Routers>
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+    </Routers>
   );
 }
 
