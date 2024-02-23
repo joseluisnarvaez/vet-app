@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import AlertaComponente from '../alertas/alerta';
+import  FormSelect from '../FormComponent/FormSelect';
 
-const ModalComponente = ({ formulario }) => {
+
+const ModalComponente = ({ editar, formulario, onClose }) => {
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({}); // Estado para almacenar el JSON del formulario
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
     const [alertaVariante, setAlertaVariante] = useState('success');
     const [alertaMensaje, setAlertaMensaje] = useState('');
     
+
     const handleClose = () => {
         setShow(false);
+        onClose();
+    
     };
 
     const sendPost = async () => {
@@ -60,19 +65,35 @@ const ModalComponente = ({ formulario }) => {
         apagarAlerta()
       };
 
-    const handleShow = () => {
-        // Limpiar el formulario estableciendo formData a un objeto vacío
-        setFormData({});
-        setShow(true);
-    };
-
+const handleShow = (editMode = false) => {
+    const initialFormData = formulario.formulario.reduce((acc, field) => {
+        acc[field.value] = field.value;
+        return acc;
+    }, {});
+    setFormData(initialFormData);
+    setShow(true);
+};
+    
     // Función para manejar cambios en los campos del formulario y actualizar el estado formData
-    const handleFormChange = (event, index) => {
-        const { id, value } = event.target;
-        const updatedFormData = { ...formData };
-        updatedFormData[id] = value;
-        setFormData(updatedFormData);
+    const handleFormChange = (event) => {
+        if (event.target.name === 'id') {
+            return;
+        }
+        const { id, name } = event.target;
+        const nombre = name !== '' ? name : id ;
+    
+        // Usamos una función de devolución de llamada con setFormData para asegurarnos de que
+        // el estado se haya actualizado antes de imprimirlo en la consola
+        setFormData(prevFormData => {
+            const updatedFormData = {
+                ...prevFormData,
+                [nombre]: event.target.value,
+            };
+            console.log(updatedFormData); // Imprimimos el estado actualizado
+            return updatedFormData; // Devolvemos el estado actualizado
+        });
     };
+    
 
     const apagarAlerta = () => {
         
@@ -84,42 +105,61 @@ const ModalComponente = ({ formulario }) => {
           clearTimeout(timeoutId);
         };
     }
-
+    useEffect(() => {
+            if(!editar) return;
+            const initialFormData = formulario.formulario.reduce((acc, field) => {
+                acc[field.name] = field.value;
+                return acc;
+            }, {});
+            setFormData(initialFormData);
+            setShow(true);
+        
+    }, [formulario,editar]);
 
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
-                {formulario.nameButton}
+                {formulario.nameButton }
             </Button>
 
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose}  backdrop="static">
                 <Modal.Header closeButton>
-                    <Modal.Title>{formulario.title}</Modal.Title>
+                    <Modal.Title>{!editar?
+                    formulario.title:
+                    formulario.titleEditar }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   {mostrarAlerta && <AlertaComponente variant={alertaVariante} mensajeAlert={alertaMensaje} mostrarAlerta={mostrarAlerta} />}
-                    <Form>
-                        {formulario.formulario.map((form, index) => (
-                            <Form.Group className="mb-3" controlId={form.name} key={index}>
+                    <Form className={formulario.formulario.length > 5 ? 'col' : ''}>
+                        {console.log(formulario)}
+                        {
+                            
+                        formulario.formulario.map((form, index) => (
+                            <Form.Group className={`mb-3 ${formulario.formulario.length > 5 ? 'row' : ''}`} controlId={form.name} key={index}>
                                 <Form.Label>{form.label}</Form.Label>
-                                {form.type === 'textarea' ? (
+                                {form.type === 'textarea' && (
                                     <Form.Control
                                         as="textarea"
                                         rows={3}
-
                                         name={form.name}
+                                        className="form-control"
                                         placeholder={form.placeholder}
-                                        value={formData[form.name] || ''} // Usar el valor del estado formData
-                                        onChange={(event) => handleFormChange(event, index)} // Manejar cambios en el campo
+                                        value={formData[form.name] || ''}
+                                        onChange={handleFormChange}
                                     />
-                                ) : (
+                                )}
+                                {(form.type === 'text' || form.type === 'hidden' || form.type === 'number') && (
                                     <Form.Control
                                         type={form.type}
                                         name={form.name}
+                                        className="form-control"
                                         placeholder={form.placeholder}
-                                        value={formData[form.name] || ''} // Usar el valor del estado formData
-                                        onChange={(event) => handleFormChange(event, index)} // Manejar cambios en el campo
+                                        value={formData[form.name] || ''}
+                                        onChange={handleFormChange}
                                     />
+                                )}
+                                {form.type === 'select' && (
+                                    <FormSelect {...form.name} value={formData[form.name] || ''}  handleFormChange = {handleFormChange} id= {128} funcionLoad = {form.loadValues} />
                                 )}
                             </Form.Group>
                         ))}

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Routers from './Routers';
 import Dashboard from './pages/Dashboard';
+import Login from './components/login/login';
 
 // Función de verificación de sesión (puedes personalizarla según tus necesidades)
 const isAuthenticated = () => {
@@ -20,6 +21,7 @@ const ProtectedRoute = ({ element }) => {
 function App() {
   return (
     <Routers>
+      <Route path="/" component={Login} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
     </Routers>

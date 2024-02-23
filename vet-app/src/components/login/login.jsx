@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { BrowserRouter as  Route, Routes, useNavigate  } from 'react-router-dom';
+import { useNavigate  } from 'react-router-dom';
 
 const LoginComponent = () => {
   const [username, setUsername] = useState('jose@admin.cl'); // Estado para almacenar el email
@@ -19,11 +19,11 @@ const LoginComponent = () => {
     e.preventDefault();
 
     // Realiza la solicitud POST al punto final de autenticación
-      const response = await axios.post('http://localhost:8080/authenticate', jsonUser, headers)
+      await axios.post('http://localhost:8080/authenticate', jsonUser, headers)
       .then(function (response) {   
         console.log(response.data);
         localStorage.setItem('token', response.data.token);
-        navigate('/productos');
+        navigate('/dashboard');
       })
         .catch(function (error) {
             // Si la solicitud falla, muestra el mensaje de error
