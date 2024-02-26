@@ -21,9 +21,12 @@ const SearchTextComponente = ({url, setParametros, formulario}) =>{
              { selectedOption.formulario.map((form, index) => (
 
                 form.type !== "hidden" && (
-                    <p key={index}>
-                        {form.label}: {form.value}
-                    </p>
+                    <div className="mt-3">
+                      <label key={index} className="tx-11 fw-bolder mb-0 text-uppercase">
+                          {form.label}
+                      </label>
+                          : <p className="text-muted">{form.value}</p>
+                    </div>
                 )
               )
               )
@@ -78,7 +81,7 @@ const SearchTextComponente = ({url, setParametros, formulario}) =>{
           onSearch={handleSearch}
           options={options}
           placeholder="Buscar ....."
-          className='form-control typeahead'
+          className='form-control typeahead no-border'
           onChange={selected => {
             handleSelect(selected)
           }}

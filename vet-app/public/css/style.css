@@ -3805,7 +3805,8 @@ div.tox .btn-group-vertical > .btn-group:not(:first-child) > .tox-button,
 }
 
 .nav-link {
-  display: block;
+  display: flex;
+  align-items: center;
   padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
   font-size: var(--bs-nav-link-font-size);
   font-weight: var(--bs-nav-link-font-weight);
@@ -18875,6 +18876,10 @@ textarea:visited {
   box-shadow: none;
 }
 
+.no-border input {
+  border: none;
+}
+
 select,
 .form-check-input {
   -webkit-appearance: none;
@@ -19379,7 +19384,7 @@ body {
   min-height: 100vh;
   background: #f9fafb;
   width: calc(100% - 240px);
-  margin-left: 240px;
+  margin-left: 200px;
   display: flex;
   flex-direction: column;
   -webkit-transition: margin 0.1s ease, width 0.1s ease;
@@ -19387,14 +19392,11 @@ body {
 }
 .main-wrapper .page-wrapper .page-content {
   flex-grow: 1;
-  padding: 25px;
+  padding: 24px 24px 24px 0;
   margin-top: 60px;
+  margin-left: 40px;
 }
-@media (max-width: 767px) {
-  .main-wrapper .page-wrapper .page-content {
-    padding: 25px 15px;
-  }
-}
+
 .main-wrapper .page-wrapper.full-page {
   width: 100%;
   margin-left: 0;
@@ -19436,7 +19438,7 @@ body {
 }
 
 .navbar {
-  width: calc(100% - 240px);
+  width: calc(100% - 220px);
   height: 60px;
   background: #fff;
   border-bottom: 1px solid #e9ecef;
@@ -19445,7 +19447,7 @@ body {
   padding: 0;
   position: fixed;
   right: 0;
-  left: 240px;
+  left: 220px;
   z-index: 978;
   box-shadow: 3px 0 10px 0 rgba(183, 192, 206, 0.2);
   transition: width 0.1s ease, left 0.1s ease;
@@ -19590,7 +19592,7 @@ body {
 }
 
 .sidebar {
-  width: 240px;
+  width: 220px;
   height: 100%;
   position: fixed;
   left: 0;
@@ -19609,7 +19611,7 @@ body {
   padding: 0 25px;
   border-right: 1px solid #e9ecef;
   z-index: 999;
-  width: 98nav-link dropdown-toggle%;
+  width: 98%;
   -webkit-transition: width 0.1s ease;
   transition: width 0.1s ease;
 }
@@ -19867,7 +19869,7 @@ body {
 .sidebar .sidebar-body .nav {
   display: flex;
   flex-direction: column;
-  padding: 25px 25px 50px 25px;
+  padding: 25px 62px 50px 25px;
 }
 .sidebar .sidebar-body .nav .nav-item {
   position: relative;

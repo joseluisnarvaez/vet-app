@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { Box } from 'react-feather'
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 const options = [
   {
@@ -12,30 +11,20 @@ const options = [
 ]
 
 function OffCanvasExample({ name, ...props }) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   return (
     <>
-     <div className="contenedor">
-      <Button className="boton-esquina" variant="primary" onClick={handleShow}>
-        Menu     </Button>
-    </div>
+
     
-    
-    <Offcanvas show={show} onHide={handleClose}  style={{ width: '13%' }}  {...props}>
+    <Offcanvas show={show} style={{ width: '11%', border: 'none' }}  {...props}>
 
       <Nav className="sidebar">.
       
       <div className="sidebar-header">
         
         <a href="/" className="sidebar-brand"> Veterinar<span>IA</span> </a>
-        <Offcanvas.Header  closeButton style={{marginLeft : '19%'}} >
-        <Offcanvas.Title>
-        </Offcanvas.Title>
-      </Offcanvas.Header>
       </div>
       <div className="sidebar-body">
         <ul className="nav">

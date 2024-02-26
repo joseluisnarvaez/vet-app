@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import AlertaComponente from '../alertas/alerta';
 import  FormSelect from '../FormComponent/FormSelect';
+import { Col, Row } from 'react-bootstrap';
 
 
 const ModalComponente = ({ editar, formulario, onClose }) => {
@@ -13,11 +14,21 @@ const ModalComponente = ({ editar, formulario, onClose }) => {
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
     const [alertaVariante, setAlertaVariante] = useState('success');
     const [alertaMensaje, setAlertaMensaje] = useState('');
-    
-
+    const filas = Math.ceil(formulario.formulario.length / 2);
+    console.log("Cantidad de filas:", filas);
     const handleClose = () => {
         setShow(false);
         onClose();
+    
+    };
+
+    const generaCol = (form, index) => {
+        const lengForm = form.length;
+        
+        if(index % 5 === 0){
+            return true;
+        }
+        return false;
     
     };
 
@@ -122,7 +133,7 @@ const handleShow = (editMode = false) => {
                 {formulario.nameButton }
             </Button>
 
-            <Modal show={show} onHide={handleClose}  backdrop="static">
+            <Modal show={show} onHide={handleClose}  backdrop="static" size={formulario.formulario.length > 5 ? 'lg' : ''}>
                 <Modal.Header closeButton>
                     <Modal.Title>{!editar?
                     formulario.title:
@@ -130,12 +141,14 @@ const handleShow = (editMode = false) => {
                 </Modal.Header>
                 <Modal.Body>
                   {mostrarAlerta && <AlertaComponente variant={alertaVariante} mensajeAlert={alertaMensaje} mostrarAlerta={mostrarAlerta} />}
-                    <Form className={formulario.formulario.length > 5 ? 'col' : ''}>
-                        {console.log(formulario)}
-                        {
-                            
-                        formulario.formulario.map((form, index) => (
-                            <Form.Group className={`mb-3 ${formulario.formulario.length > 5 ? 'row' : ''}`} controlId={form.name} key={index}>
+                    <Form >
+                        
+                    {Array.from({ length: filas }, (_, rowIndex) => (
+                        
+                  <Row key={rowIndex}>
+                    {formulario.formulario.slice(rowIndex * 2, (rowIndex + 1) * 2).map((form, colIndex) => (
+                        <Col key={colIndex} >
+                            <Form.Group controlId={form.name}>
                                 <Form.Label>{form.label}</Form.Label>
                                 {form.type === 'textarea' && (
                                     <Form.Control
@@ -159,10 +172,14 @@ const handleShow = (editMode = false) => {
                                     />
                                 )}
                                 {form.type === 'select' && (
-                                    <FormSelect {...form.name} value={formData[form.name] || ''}  handleFormChange = {handleFormChange} id= {128} funcionLoad = {form.loadValues} />
+                                    <FormSelect {...form.name} value={formData[form.name] || ''} handleFormChange={handleFormChange} id={128} funcionLoad={form.loadValues} />
                                 )}
                             </Form.Group>
-                        ))}
+                        </Col>
+                    ))}
+                </Row>
+            ))}
+                            
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
