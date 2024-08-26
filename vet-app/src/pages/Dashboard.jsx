@@ -6,9 +6,8 @@ import App from "../components/productos/productos";
 const Dashboard = () => {
   return (
     <div className="main-wrapper">
-        <Menu />
         <div className="page-wrapper">
-          <Header />
+       
           <div className="page-content">
           <nav className="page-breadcrumb">
             <ol className="breadcrumb">
