@@ -22,7 +22,7 @@ const Tabla = ({
   const [alertaVariante, setAlertaVariante] = useState("success");
   const [alertaMensaje, setAlertaMensaje] = useState("");
   const [editar, setEditar] = useState(false);
-  const [formulario, setFormulario] = useState(null);
+  const [ setFormulario] = useState(null);
 
 
   if (!data || data.length === 0) {

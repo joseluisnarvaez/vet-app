@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo  } from 'react';
 import Tabla from '../tablas/tablaComponente';
 import axios from 'axios';
 import Tab from 'react-bootstrap/Tab';
@@ -16,10 +16,11 @@ const App = () => {
   const [activeTab, setActiveTab] = useState('Categoria'); // Estado para rastrear la pestaña activa
   const [productosData, setProductosData] = useState({}); 
   const [proveedorData, setProveedorData] = useState({}); 
-  const headers = {
-    'Authorization': localStorage.getItem('token'),
+  const token = localStorage.getItem('token');
+  const headers = useMemo(() => ({
+    'Authorization': token,
     'Content-Type': 'application/json'
-  };
+  }), [token]);
 
 
   const funCambioPaginaProveedor = (pagina) => {
@@ -188,10 +189,10 @@ const App = () => {
         console.log(error); 
       });
       
-  }, []);
+  }, [headers]);
 
   return (
-    <>
+   
       <Tabs
         defaultActiveKey="Categoria"
         activeKey={activeTab} // Usa el estado activeTab para rastrear la pestaña activa
@@ -241,7 +242,6 @@ const App = () => {
         </Tab>
       </Tabs>
       
-    </>
   );
 };
 

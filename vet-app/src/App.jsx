@@ -1,10 +1,9 @@
-import { Route, Navigate, BrowserRouter, Routes, useLocation } from 'react-router-dom';
+import { Route, Navigate, BrowserRouter, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Login from './components/login/login';
 import Caja from './components/caja/caja';
 import Menu from './components/template/menu';
 import Header from './components/template/header';
-import { useEffect, useState } from 'react';
 
 // Función de verificación de sesión (puedes personalizarla según tus necesidades)
 const isAuthenticated = () => {

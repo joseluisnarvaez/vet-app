@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate  } from 'react-router-dom';
-
+import { useNavigate,Link  } from 'react-router-dom';
 const LoginComponent = () => {
   const [username, setUsername] = useState('jose@admin.cl'); // Estado para almacenar el email
   const [password, setPassword] = useState(''); // Estado para almacenar la contraseña
@@ -49,9 +48,9 @@ const LoginComponent = () => {
                   </div>
                   <div className="col-md-8 ps-md-0">
                     <div className="auth-form-wrapper px-4 py-5">
-                      <a href="#" className="noble-ui-logo d-block mb-2">
-                        Veterinar<span>IA</span>
-                      </a>
+                       <Link to="/" className="noble-ui-logo d-block mb-2">
+                              Veterinar<span>IA</span>
+                        </Link>
                       <h5 className="text-muted fw-normal mb-4">Iniciar sesión</h5>
                       {error && <div className="alert alert-danger">{error}</div>}
                       <form onSubmit={handleSubmit} className="forms-sample">

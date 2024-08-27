@@ -22,15 +22,6 @@ const ModalComponente = ({ editar, formulario, onClose }) => {
     
     };
 
-    const generaCol = (form, index) => {
-        const lengForm = form.length;
-        
-        if(index % 5 === 0){
-            return true;
-        }
-        return false;
-    
-    };
 
     const sendPost = async () => {
         try {

@@ -1,6 +1,4 @@
 import Footer from "../components/template/footer";
-import Header from "../components/template/header";
-import Menu from "../components/template/menu";
 import App from "../components/productos/productos";
 
 const Dashboard = () => {
@@ -11,7 +9,7 @@ const Dashboard = () => {
           <div className="page-content">
           <nav className="page-breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><a href="#">Dashboard</a></li>
+
               <li className="breadcrumb-item active" aria-current="page">
                 Listado de Productos
               </li>

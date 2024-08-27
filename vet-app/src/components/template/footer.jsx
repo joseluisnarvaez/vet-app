@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from 'react-bootstrap/Card';
+
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
         >
           <p className="text-muted mb-1 mb-md-0">
             Copyright © 2023 
-            <a href="https://www.nobleui.com" target="_blank"> jnarvaez</a>.
+             jnarvaez.
           </p>
           <p className="text-muted">
             Trabajando para usted...

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Box } from 'react-feather'
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Nav from 'react-bootstrap/Nav';
@@ -81,15 +81,15 @@ function OffCanvasExample({ name, ...props }) {
 function Menu(){
   const [path, setPath] = useState(window.location.pathname);
 
-  const protectedPath = () => {
-        console.log(path)
-    return path !== "/" ;
-  };
+  const protectedPath = useCallback(() => {
+    console.log(path);
+    return path !== "/";
+  }, [path]);
 
   useEffect(() => {
     setPath(window.location.pathname)
     protectedPath()
-}, [path]);
+}, [path,protectedPath]);
   
   return (
     <>

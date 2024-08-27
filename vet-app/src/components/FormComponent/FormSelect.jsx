@@ -17,7 +17,7 @@ const FormSelect = ({ name, value, handleFormChange , id, funcionLoad }) => {
         }
         );
          
-    }, [id]);
+    }, [id,funcionLoad]);
 
     const handleSelectChange = (event) => {
         // Llama a la función de manejo del formulario si está definida
