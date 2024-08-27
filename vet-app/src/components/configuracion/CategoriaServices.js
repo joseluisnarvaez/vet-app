@@ -18,7 +18,7 @@ const headers = {
   export const funCambioPaginaCategoria = (pagina) => {
     pagina = pagina-1;
     console.log(pagina);
-    axios.get(`https://polar-stream-68024-7c3a868138d7.herokuapp.comcategoria/listar?page=${pagina}`, { headers })
+    axios.get(`https://polar-stream-68024-7c3a868138d7.herokuapp.com/categoria/listar?page=${pagina}`, { headers })
     .then(function (response) {
         return response.data;
     })
@@ -28,5 +28,5 @@ const headers = {
   };
 
   export const getCategorias = () => {
-    return  axios.get(`https://polar-stream-68024-7c3a868138d7.herokuapp.comcategoria/listarAll`, { headers })
+    return  axios.get(`https://polar-stream-68024-7c3a868138d7.herokuapp.com/categoria/listarAll`, { headers })
   };
