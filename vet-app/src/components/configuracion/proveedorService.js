@@ -6,7 +6,7 @@ const headers = {
   };
 
 export const getAllProveedores = () => {
-    return  axios.get(`http://localhost:8080/proveedor/listarAll`, { headers })
+    return  axios.get(`https://polar-stream-68024-7c3a868138d7.herokuapp.comproveedor/listarAll`, { headers })
 };
 
 export const setParametros = (data, formularioProveedor)  =>{

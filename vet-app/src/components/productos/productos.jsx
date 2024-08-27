@@ -26,7 +26,7 @@ const App = () => {
   const funCambioPaginaProveedor = (pagina) => {
     pagina = pagina-1;
     console.log(pagina);
-    const url = `http://localhost:8080/productos/listar?page=${pagina}`;
+    const url = `https://polar-stream-68024-7c3a868138d7.herokuapp.comproductos/listar?page=${pagina}`;
     console.log(url);
     axios.get(url, { headers })
       .then(function (response) {
@@ -41,7 +41,7 @@ const App = () => {
   const funCambioPaginaProducto = (pagina) => {
     pagina = pagina-1;
     console.log(pagina);
-    const url = `http://localhost:8080/productos/listar?page=${pagina}`;
+    const url = `https://polar-stream-68024-7c3a868138d7.herokuapp.comproductos/listar?page=${pagina}`;
     console.log(url);
     axios.get(url, { headers })
       .then(function (response) {
@@ -57,7 +57,7 @@ const App = () => {
   const funCambioPaginaSubCategoria = (pagina) => {
     pagina = pagina-1;
     console.log(pagina);
-    axios.get(`http://localhost:8080/subcategorias/listar?page=${pagina}`, { headers })
+    axios.get(`https://polar-stream-68024-7c3a868138d7.herokuapp.comsubcategorias/listar?page=${pagina}`, { headers })
     .then(function (response) {
       setSubCategoriaData(response.data);
     })
@@ -102,21 +102,21 @@ const App = () => {
 
   };
 
-  formularioCategoria.url= 'http://localhost:8080/categoria';
+  formularioCategoria.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comcategoria';
   formularioCategoria.updateTabla = (pagina) => {  funCambioPaginaCategoria(0);};
   formularioCategoria.show = false;
 
   
   formularioSubCategoria.updateTabla = (pagina) => {  funCambioPaginaSubCategoria(0);};
-  formularioSubCategoria.url= 'http://localhost:8080/subcategorias';
+  formularioSubCategoria.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comsubcategorias';
   formularioSubCategoria.show = false;
 
   formularioProducto.updateTabla = (pagina) => {  funCambioPaginaProducto(0);};
-  formularioProducto.url= 'http://localhost:8080/productos';  
+  formularioProducto.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comproductos';  
   formularioProducto.show = false;
 
   formularioProveedor.updateTabla = (pagina) => {  funCambioPaginaProveedor(0);};
-  formularioProveedor.url= 'http://localhost:8080/proveedor';  
+  formularioProveedor.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comproveedor';  
   formularioProveedor.show = false;
 
   const funEditarCategoria  = async (id, url) => {
@@ -124,7 +124,7 @@ const App = () => {
 
     const data = await funCargaEditar(apiUrl, headers);
     setParametrosCategoria(data,formularioCategoria)
-    formularioCategoria.url= 'http://localhost:8080/categoria';
+    formularioCategoria.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comcategoria';
 
   };
   const funEditarSubCategoria  = async (id, url) => {
@@ -133,7 +133,7 @@ const App = () => {
     const data = await funCargaEditar(apiUrl, headers);
     console.log(data);
     setParametrosSubCategoria(data,formularioSubCategoria);
-    formularioSubCategoria.url= 'http://localhost:8080/subcategorias';
+    formularioSubCategoria.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comsubcategorias';
  };
 
  
@@ -143,7 +143,7 @@ const App = () => {
   const data = await funCargaEditar(apiUrl, headers);
   console.log(data);
   setParametros(data,formularioProveedor)
-  formularioProveedor.url= 'http://localhost:8080/proveedor';
+  formularioProveedor.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comproveedor';
 };
 
  const funEditarProducto  = async (id, url) => {
@@ -153,12 +153,12 @@ const App = () => {
   setParametrosProductos(data,formularioProducto);
   console.log(data);
 
-  formularioProducto.url= 'http://localhost:8080/productos';
+  formularioProducto.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.comproductos';
 };
 
   useEffect(() => {
     // Realiza la solicitud GET cuando el componente se monte
-    axios.get('http://localhost:8080/categoria/listar', { headers })
+    axios.get('https://polar-stream-68024-7c3a868138d7.herokuapp.comcategoria/listar', { headers })
       .then(function (response) {
         console.log(JSON.stringify(response.data.lista));
         setCategoriaData(response.data);
@@ -167,21 +167,21 @@ const App = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8080/subcategorias/listar', { headers })
+    axios.get('https://polar-stream-68024-7c3a868138d7.herokuapp.comsubcategorias/listar', { headers })
       .then(function (response) {
         setSubCategoriaData(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
-      axios.get('http://localhost:8080/productos/listar', { headers })
+      axios.get('https://polar-stream-68024-7c3a868138d7.herokuapp.comproductos/listar', { headers })
       .then(function (response) {
         setProductosData(response.data);
       })
       .catch(function (error) {
         console.log(error); 
       });
-      axios.get('http://localhost:8080/proveedor/listar', { headers })
+      axios.get('https://polar-stream-68024-7c3a868138d7.herokuapp.comproveedor/listar', { headers })
       .then(function (response) {
         setProveedorData(response.data);
       })

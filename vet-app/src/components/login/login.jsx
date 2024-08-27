@@ -18,7 +18,7 @@ const LoginComponent = () => {
     e.preventDefault();
 
     // Realiza la solicitud POST al punto final de autenticación
-      await axios.post('http://localhost:8080/authenticate', jsonUser, headers)
+      await axios.post('https://polar-stream-68024-7c3a868138d7.herokuapp.comauthenticate', jsonUser, headers)
       .then(function (response) {   
         console.log(response.data);
         localStorage.setItem('token', response.data.token);

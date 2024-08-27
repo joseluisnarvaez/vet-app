@@ -7,7 +7,7 @@ const headers = {
 
 
   export const obtenerSubcategorasDeCategoria = async (idCategoria) => {
-    const apiUrl = 'http://localhost:8080/subcategorias/categoria/'+idCategoria;
+    const apiUrl = 'https://polar-stream-68024-7c3a868138d7.herokuapp.comsubcategorias/categoria/'+idCategoria;
     try {
       const response = await axios.get(apiUrl, { headers });
       return response; // Devuelve los datos directamente
