@@ -204,7 +204,7 @@ const App = () => {
               <SearchTextComponente url={formularioCategoria.url} setParametros={setParametrosCategoria} formulario={formularioCategoria}  />
           </div>
           <br></br>
-          {activeTab === 'Categoria' && <Tabla formularioProps= {formularioCategoria} data={categoriaData.lista} {...categoriaData}  funCambioPagina = {funCambioPaginaCategoria} funEliminar={funEliminar} url={formularioCategoria.url} funCargaEditar={funEditarCategoria} />}
+          {activeTab === 'Categoria' && <Tabla formularioProps= {formularioCategoria} data={categoriaData} {...categoriaData}  funCambioPagina = {funCambioPaginaCategoria} funEliminar={funEliminar} url={formularioCategoria.url} funCargaEditar={funEditarCategoria} />}
         </Tab>
         <Tab eventKey="SubCategoria" title="Sub-Categorías">
           <div className="input-group">
