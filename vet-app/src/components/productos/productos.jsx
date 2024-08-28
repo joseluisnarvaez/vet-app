@@ -3,7 +3,7 @@ import Tabla from '../tablas/tablaComponente';
 import axios from 'axios';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import {funCambioPaginaCategoria, setParametros as  setParametrosCategoria} from '../configuracion/CategoriaServices';
+import {getCategoriasByPage, funCambioPaginaCategoria, setParametros as  setParametrosCategoria} from '../configuracion/CategoriaServices';
 import { setParametros as  setParametrosSubCategoria, setParametrosMuestra} from '../configuracion/SubCategoraService';
 import { setParametros as  setParametrosProductos} from '../configuracion/ProductoServices';
 import {setParametros, setParametrosVista} from '../configuracion/proveedorService';
@@ -74,6 +74,8 @@ const App = () => {
       console.log(response.data);
       eliminado = true;
       console.log('Elemento eliminado con éxito');
+      setCategoriaData(getCategoriasByPage(0));
+
     } catch (error) {
       eliminado = false;
       console.error('Error al eliminar el elemento:', error);
@@ -103,7 +105,7 @@ const App = () => {
   };
 
   formularioCategoria.url= 'https://polar-stream-68024-7c3a868138d7.herokuapp.com/categoria';
-  formularioCategoria.updateTabla = (pagina) => {  funCambioPaginaCategoria(0);};
+  formularioCategoria.updateTabla = (pagina) => {  setCategoriaData(funCambioPaginaCategoria(0));};
   formularioCategoria.show = false;
 
   
@@ -157,15 +159,9 @@ const App = () => {
 };
 
   useEffect(() => {
-    // Realiza la solicitud GET cuando el componente se monte
-    axios.get('https://polar-stream-68024-7c3a868138d7.herokuapp.com/categoria/listar', { headers })
-      .then(function (response) {
-        console.log(JSON.stringify(response.data.lista));
-        setCategoriaData(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+
+    setCategoriaData(funCambioPaginaCategoria(0));
+
 
     axios.get('https://polar-stream-68024-7c3a868138d7.herokuapp.com/subcategorias/listar', { headers })
       .then(function (response) {

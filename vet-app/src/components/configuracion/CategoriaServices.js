@@ -30,3 +30,15 @@ const headers = {
   export const getCategorias = () => {
     return  axios.get(`https://polar-stream-68024-7c3a868138d7.herokuapp.com/categoria/listarAll`, { headers })
   };
+
+
+  export const getCategoriasByPage = (page) =>{
+    axios.get('https://polar-stream-68024-7c3a868138d7.herokuapp.com/categoria/listar?page='+page, { headers })
+    .then(function (response) {
+      console.log(JSON.stringify(response.data.lista));
+     return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
