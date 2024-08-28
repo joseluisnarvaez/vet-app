@@ -63,7 +63,7 @@ const Tabla = ({
 
   return (
     <>
-      <Modal editar={editar} formulario={formularioProps} onClose={handleClose} />
+      <Modal editar={editar} formulario={formulario} onClose={handleClose} />
 
       {mostrarAlerta && (
         <AlertaComponente
