@@ -1,11 +1,10 @@
-import { React, useState } from "react";
+import { useState } from "react";
 import Table from "react-bootstrap/Table";
 import Pagination from "react-bootstrap/Pagination";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import AlertaComponente from "../alertas/alerta";
-import Modal from  '../modals/modal'
-
+import Modal from "../modals/modal";
 
 const Tabla = ({
   data,
@@ -22,65 +21,49 @@ const Tabla = ({
   const [alertaVariante, setAlertaVariante] = useState("success");
   const [alertaMensaje, setAlertaMensaje] = useState("");
   const [editar, setEditar] = useState(false);
-  const [ setFormulario] = useState(null);
-
+  const [formulario, setFormulario] = useState(null);
 
   if (!data || data.length === 0) {
     return <p>No hay datos para mostrar.</p>;
   }
-
+  
   const headers = Object.keys(data[0]);
-  paginaActual++;
-
-  // Calcula la página anterior y siguiente
   const paginaAnterior = paginaActual > 1 ? paginaActual - 1 : 1;
-  const paginaSiguiente =
-    paginaActual < cantidadPaginas ? paginaActual + 1 : cantidadPaginas;
-  const datosPaginados = data;
+  const paginaSiguiente = paginaActual < cantidadPaginas ? paginaActual + 1 : cantidadPaginas;
 
   const handlePaginaClick = (pagina) => {
     funCambioPagina(pagina);
     console.log(`Cambiando a la página ${pagina}`);
   };
 
-  const handleEditarClick = async (id, url) => {
+  const handleEditarClick = async (id) => {
     const formulario = await funCargaEditar(id, url);
     setFormulario(formulario);
     setEditar(true);
-};
-const handleClose = () => {
-  setEditar(false);
-};
+  };
 
-  const handleEliminarClick = async (id, url) => {
+  const handleClose = () => {
+    setEditar(false);
+  };
+
+  const handleEliminarClick = async (id) => {
     const eliminado = await funEliminar(id, url);
     funCambioPagina(0);
-    if (eliminado) {
-      setAlertaVariante("success");
-      setAlertaMensaje("Eliminado con éxito");
-      setMostrarAlerta(true);
-    } else {
-      setAlertaVariante("danger");
-      setAlertaMensaje("Error al eliminar");
-      setMostrarAlerta(true);
-    }
+    setAlertaVariante(eliminado ? "success" : "danger");
+    setAlertaMensaje(eliminado ? "Eliminado con éxito" : "Error al eliminar");
+    setMostrarAlerta(true);
     apagarAlerta();
   };
+
   const apagarAlerta = () => {
-    const timeoutId = setTimeout(() => {
+    setTimeout(() => {
       setMostrarAlerta(false);
     }, 5000);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
   };
-  
 
   return (
     <>
-
-     <Modal editar={editar} formulario={formularioProps} onClose={handleClose} />
+      <Modal editar={editar} formulario={formularioProps} onClose={handleClose} />
 
       {mostrarAlerta && (
         <AlertaComponente
@@ -89,6 +72,7 @@ const handleClose = () => {
           mostrarAlerta={mostrarAlerta}
         />
       )}
+      
       <Table responsive="xl" striped="columns" title="Datos" className="table">
         <thead>
           <tr>
@@ -99,19 +83,17 @@ const handleClose = () => {
           </tr>
         </thead>
         <tbody>
-          {datosPaginados.map((row, rowIndex) => (
+          {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {headers.map((header, headerIndex) => (
                 <td key={headerIndex}>{row[header]}</td>
               ))}
               <td>
                 <DropdownButton id="dropdown-basic-button" title="Acción">
-                  <Dropdown.Item onClick={() => handleEditarClick(row["id"], url)}>
+                  <Dropdown.Item onClick={() => handleEditarClick(row["id"])}>
                     Editar
                   </Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={() => handleEliminarClick(row["id"], url)}
-                  >
+                  <Dropdown.Item onClick={() => handleEliminarClick(row["id"])}>
                     Eliminar
                   </Dropdown.Item>
                 </DropdownButton>
@@ -120,7 +102,9 @@ const handleClose = () => {
           ))}
         </tbody>
       </Table>
+
       <br />
+      
       <Pagination>
         <Pagination.First onClick={() => handlePaginaClick(1)} />
         <Pagination.Prev onClick={() => handlePaginaClick(paginaAnterior)} />
