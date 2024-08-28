@@ -21,7 +21,6 @@ const Tabla = ({
   const [alertaVariante, setAlertaVariante] = useState("success");
   const [alertaMensaje, setAlertaMensaje] = useState("");
   const [editar, setEditar] = useState(false);
-  const [formulario, setFormulario] = useState(null);
 
   if (!data || data.length === 0) {
     return <p>No hay datos para mostrar.</p>;
@@ -37,8 +36,7 @@ const Tabla = ({
   };
 
   const handleEditarClick = async (id) => {
-    const formulario = await funCargaEditar(id, url);
-    setFormulario(formulario);
+    await funCargaEditar(id, url);
     setEditar(true);
   };
 
@@ -63,7 +61,7 @@ const Tabla = ({
 
   return (
     <>
-      <Modal editar={editar} formulario={formulario} onClose={handleClose} />
+      <Modal editar={editar} formulario={formularioProps} onClose={handleClose} />
 
       {mostrarAlerta && (
         <AlertaComponente
