@@ -1,45 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 
+const FormSelect = ({ name, value, handleFormChange, id, funcionLoad }) => {
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null); // Estado para manejar errores
 
-const FormSelect = ({ name, value, handleFormChange , id, funcionLoad }) => {
+  useEffect(() => {
+    let isMounted = true; // Variable para comprobar si el componente está montado
 
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-         funcionLoad(id).then(res => {
-            console.log(res);
-            setData(res.data.lista);
+    // Llamada a la función para cargar datos
+    funcionLoad(id)
+      .then(res => {
+        if (isMounted) {
+          setData(res.lista);
         }
-        )
-        .catch(function (error) {
-          console.log(error);
-        }
-        );
-         
-    }, [id,funcionLoad]);
+      })
+      .catch(error => {
+        console.error('Error al cargar los datos:', error);
+        setError('No se pudo cargar la lista.'); // Manejo de errores
+      });
 
-    const handleSelectChange = (event) => {
-        // Llama a la función de manejo del formulario si está definida
-        if (handleFormChange) {
-            handleFormChange(event);
-        }
+    // Cleanup function para evitar actualización de estado si el componente se desmonta
+    return () => {
+      isMounted = false;
     };
+  }, [id, funcionLoad]);
 
-    return (
-        <Form.Select
-            name={name}
-            className="form-control"
-            value={value}
-            onChange={handleSelectChange}
-        >
-            <option value="option1">Seleccione</option>
-            {data.map((item, index) => (
-                <option key={index} value={item.id}>{item.nombre}</option>
-            ))}
+  const handleSelectChange = (event) => {
+    if (handleFormChange) {
+      handleFormChange(event);
+    }
+  };
 
-        </Form.Select>
-    );
+  return (
+    <Form.Select
+      name={name}
+      className="form-control"
+      value={value}
+      onChange={handleSelectChange}
+    >
+      <option value="">Seleccione</option>
+      {error && <option disabled>{error}</option>} {/* Mostrar error en opciones si hay */}
+      {data.map((item) => (
+        <option key={item.id} value={item.id}>{item.nombre}</option> 
+      ))}
+    </Form.Select>
+  );
 };
 
 export default FormSelect;

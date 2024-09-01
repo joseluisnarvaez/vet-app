@@ -37,7 +37,7 @@ const SearchTextComponente = ({url, setParametros, formulario}) =>{
       }
       const handleSelect = (option) => {
           if(Array.isArray(option) && option.length > 0){
-            setParametros(option[0],formulario)
+            setParametros(option[0],formulario,true)
             setSelectedOption(formulario);
             setIsModalOpen(true);
           }

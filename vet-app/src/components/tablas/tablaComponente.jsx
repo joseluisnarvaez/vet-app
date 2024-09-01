@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Table from "react-bootstrap/Table";
 import Pagination from "react-bootstrap/Pagination";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -21,36 +21,43 @@ const Tabla = ({
   const [alertaVariante, setAlertaVariante] = useState("success");
   const [alertaMensaje, setAlertaMensaje] = useState("");
   const [editar, setEditar] = useState(false);
+  const [currentId, setCurrentId] = useState(null); // Estado para rastrear el ID del registro actual
 
-  if (!data || data.length === 0) {
-    return <p>No hay datos para mostrar.</p>;
-  }
-  
-  const headers = Object.keys(data[0]);
-  const paginaAnterior = paginaActual > 1 ? paginaActual - 1 : 1;
-  const paginaSiguiente = paginaActual < cantidadPaginas ? paginaActual + 1 : cantidadPaginas;
+  // Mueve los hooks useCallback fuera de cualquier condicional
+  const handleEditarClick = useCallback(async (id) => {
+    try {
+      await funCargaEditar(id, url);
+      setCurrentId(id); // Establece el ID actual del registro que se está editando
+      setEditar(true);  // Abre el modal
+    } catch (error) {
+      console.error("Error cargando datos para editar:", error);
+      setAlertaMensaje('Error al cargar los datos para editar.');
+      setAlertaVariante('danger');
+      setMostrarAlerta(true);
+      apagarAlerta();
+    }
+  }, [funCargaEditar, url]); // Asegúrate de incluir las dependencias correctas
 
-  const handlePaginaClick = (pagina) => {
-    funCambioPagina(pagina);
-    console.log(`Cambiando a la página ${pagina}`);
-  };
-
-  const handleEditarClick = async (id) => {
-    await funCargaEditar(id, url);
-    setEditar(true);
-  };
-
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setEditar(false);
-  };
+    setCurrentId(null); // Limpia el ID actual cuando se cierra el modal
+  }, []);
 
   const handleEliminarClick = async (id) => {
-    const eliminado = await funEliminar(id, url);
-    funCambioPagina(0);
-    setAlertaVariante(eliminado ? "success" : "danger");
-    setAlertaMensaje(eliminado ? "Eliminado con éxito" : "Error al eliminar");
-    setMostrarAlerta(true);
-    apagarAlerta();
+    try {
+      const eliminado = await funEliminar(id, url);
+      funCambioPagina(0);
+      setAlertaVariante(eliminado ? "success" : "danger");
+      setAlertaMensaje(eliminado ? "Eliminado con éxito" : "Error al eliminar");
+      setMostrarAlerta(true);
+      apagarAlerta();
+    } catch (error) {
+      console.error("Error eliminando el registro:", error);
+      setAlertaMensaje('Error al eliminar el registro.');
+      setAlertaVariante('danger');
+      setMostrarAlerta(true);
+      apagarAlerta();
+    }
   };
 
   const apagarAlerta = () => {
@@ -59,9 +66,31 @@ const Tabla = ({
     }, 5000);
   };
 
+  // Verifica si hay datos después de inicializar todos los hooks
+  if (!data || data.length === 0) {
+    return <p>No hay datos para mostrar.</p>;
+  }
+
+  const headers = Object.keys(data[0]);
+  const paginaAnterior = paginaActual > 1 ? paginaActual - 1 : 1;
+  const paginaSiguiente = paginaActual < cantidadPaginas ? paginaActual + 1 : cantidadPaginas;
+
+  const handlePaginaClick = (pagina) => {
+    if (pagina !== paginaActual) {
+      funCambioPagina(pagina);
+      console.log(`Cambiando a la página ${pagina}`);
+    }
+  };
+
   return (
     <>
-      <Modal editar={editar} formulario={formularioProps} onClose={handleClose} />
+      {/* Modal recibe props para controlar el estado de apertura y cierre */}
+      <Modal 
+        editar={editar} 
+        formulario={formularioProps} 
+        onClose={handleClose} 
+        currentId={currentId} // Pasar ID actual para que Modal sepa cuál registro se está editando
+      />
 
       {mostrarAlerta && (
         <AlertaComponente
@@ -70,28 +99,28 @@ const Tabla = ({
           mostrarAlerta={mostrarAlerta}
         />
       )}
-      
+
       <Table responsive="xl" striped="columns" title="Datos" className="table">
         <thead>
           <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
+            {headers.map((header) => (
+              <th key={header}>{header}</th> /* {Usar 'header' como clave única }*/
             ))}
-            <th></th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {headers.map((header, headerIndex) => (
-                <td key={headerIndex}>{row[header]}</td>
+          {data.map((row) => (
+            <tr key={row.id}> {/* Usar 'row.id' como clave única */}
+              {headers.map((header) => (
+                <td key={`${row.id}-${header}`}>{row[header]}</td>
               ))}
               <td>
                 <DropdownButton id="dropdown-basic-button" title="Acción">
-                  <Dropdown.Item onClick={() => handleEditarClick(row["id"])}>
+                  <Dropdown.Item onClick={() => handleEditarClick(row.id)}>
                     Editar
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => handleEliminarClick(row["id"])}>
+                  <Dropdown.Item onClick={() => handleEliminarClick(row.id)}>
                     Eliminar
                   </Dropdown.Item>
                 </DropdownButton>
@@ -102,7 +131,7 @@ const Tabla = ({
       </Table>
 
       <br />
-      
+
       <Pagination>
         <Pagination.First onClick={() => handlePaginaClick(1)} />
         <Pagination.Prev onClick={() => handlePaginaClick(paginaAnterior)} />

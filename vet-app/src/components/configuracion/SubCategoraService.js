@@ -1,40 +1,45 @@
 import axios from 'axios';
 
-const headers = {
-    'Authorization': localStorage.getItem('token'),
-    'Content-Type': 'application/json'
-  };
+// Función para obtener headers con el token más reciente
+const getHeaders = () => ({
+  'Authorization': localStorage.getItem('token'),
+  'Content-Type': 'application/json'
+});
 
+// Función para obtener subcategorías de una categoría específica
+export const obtenerSubcategorasDeCategoria = async (idCategoria) => {
+  const apiUrl = `${process.env.REACT_APP_API_URL}subcategorias/categoria/${idCategoria}`;
+  try {
+    const response = await axios.get(apiUrl, { headers: getHeaders() });
+    return response.data; // Devuelve los datos directamente
+  } catch (error) {
+    console.error('Error al obtener subcategorías:', error);
+    throw error; // Lanza el error para manejarlo en el componente
+  }
+};
 
-  export const obtenerSubcategorasDeCategoria = async (idCategoria) => {
-    const apiUrl = 'https://polar-stream-68024-7c3a868138d7.herokuapp.com/subcategorias/categoria/'+idCategoria;
-    try {
-      const response = await axios.get(apiUrl, { headers });
-      return response; // Devuelve los datos directamente
-    } catch (error) {
-      console.log(error);
-      throw error;
+// Función unificada para establecer parámetros en un formulario
+export const setParametrosFormulario = (data, formularioSubCategoria, isMuestra = false) => {
+  const fields = isMuestra ? 
+    {
+      subNombre: data.nombre,
+      subAbreviacion: data.abreviacion,
+      porcentajeGananciaSubCategoria: data.porcentajeGanancia,
+      subDescripcion: data.descripcion,
+      idCategoria: data.categoria,
+    } : 
+    {
+      subNombre: data.subNombre,
+      subAbreviacion: data.subAbreviacion,
+      porcentajeGananciaSubCategoria: data.porcentajeGananciaSubCategoria,
+      subDescripcion: data.subDescripcion,
+      idCategoria: data.idCategoria,
+      id: data.id,
+    };
+
+  formularioSubCategoria.formulario.forEach(field => {
+    if (fields[field.name] !== undefined) {
+      field.value = fields[field.name];
     }
-  };
-
-  export const setParametros = (data, formularioSubCategoria)  =>{
-
-    formularioSubCategoria.formulario[0].value = data.subNombre;
-    formularioSubCategoria.formulario[1].value = data.subAbreviacion;
-    formularioSubCategoria.formulario[3].value = data.porcentajeGananciaSubCategoria;
-    formularioSubCategoria.formulario[2].value = data.subDescripcion;
-    formularioSubCategoria.formulario[4].value = data.idCategoria;
-    formularioSubCategoria.formulario[5].value = data.id;
-  
-  }
-
-  export const setParametrosMuestra = (data, formularioSubCategoria)  =>{
-
-    formularioSubCategoria.formulario[0].value = data.nombre;
-    formularioSubCategoria.formulario[1].value = data.abreviacion;
-    formularioSubCategoria.formulario[3].value = data.porcentajeGanancia;
-    formularioSubCategoria.formulario[2].value = data.descripcion;
-    formularioSubCategoria.formulario[4].value = data.categoria;
-
-  
-  }
+  });
+};
