@@ -1,103 +1,71 @@
-import { useEffect, useState, useCallback } from "react"
-import { Box } from 'react-feather'
+import React, { useEffect,  useCallback } from "react";
+import { Box } from 'react-feather';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Nav from 'react-bootstrap/Nav';
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";  // Importar useLocation
+
 const options = [
   {
     name: "Menu",
     scroll: true,
     backdrop: false
   }
-]
+];
 
-function OffCanvasExample({ name, ...props }) {
-
-
+// Componente para el menú OffCanvas
+function OffCanvasMenu({ show, ...props }) {
   return (
-
-    
-    <Offcanvas show={true} style={{ width: '11%', border: 'none' }}  {...props}>
-      <Nav className="sidebar">.
-          
-          <div className="sidebar-header">
-            
-            <a href="/" className="sidebar-brand"> Veterinar<span>IA</span> </a>
-          </div>
-          <div className="sidebar-body">
-            
-            <ul className="nav">
-            
-              <NavLink className='nav-item'  to='/Dashboard'>
-                <button
-                  className="nav-link"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#inicio"
-                  aria-expanded="false"
-                  aria-controls="inicio"
-                >
-                  <Box size={18} />
-                  <span className="link-title">Dashboard</span>
-                  <i className="link-arrow" data-feather="chevron-down"></i>
-                </button>
-                <div className="collapse" id="inicio">
-                  <ul className="nav sub-menu">
-                    <li className="nav-item">
-                      <button className="nav-link">Lista de Productos</button>
-                    </li>
-                  </ul>
-                </div>
-              </NavLink>
-              <NavLink className='nav-item'  to='/caja'>
-                <button
-                  className="nav-link"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#inicio"
-                  aria-expanded="false"
-                  aria-controls="inicio"
-                >
-                  <Box size={18} />
-                  <span className="link-title">Caja</span>
-                  <i className="link-arrow" data-feather="chevron-down"></i>
-                </button>
-                <div className="collapse" id="inicio">
-                  <ul className="nav sub-menu">
-                    <li className="nav-item">
-                      <button className="nav-link">Lista de Productos</button>
-                    </li>
-                  </ul>
-                </div>
-              </NavLink>
-
-            </ul>
-          </div>  
-        </Nav>
-    
+    <Offcanvas show={show} style={{ width: '11%', border: 'none' }} {...props}>
+      <Nav className="sidebar">
+        <div className="sidebar-header">
+          <NavLink to="/" className="sidebar-brand"> Veterinar<span>IA</span> </NavLink>
+        </div>
+        <div className="sidebar-body">
+          <ul className="nav">
+            {/** Reutilización de enlaces de menú */}
+            <SidebarLink to="/Dashboard" title="Dashboard" />
+            <SidebarLink to="/caja" title="Caja" />
+          </ul>
+        </div>
+      </Nav>
     </Offcanvas>
-  )
-  
+  );
 }
 
-function Menu(){
-  const [path, setPath] = useState(window.location.pathname);
+// Componente para cada enlace del menú lateral
+function SidebarLink({ to, title }) {
+  return (
+    <li className="nav-item">
+      <NavLink className="nav-link" to={to}>
+        <Box size={18} />
+        <span className="link-title">{title}</span>
+        <i className="link-arrow" data-feather="chevron-down"></i>
+      </NavLink>
+    </li>
+  );
+}
 
-  const protectedPath = useCallback(() => {
-    console.log(path);
-    return path !== "/";
-  }, [path]);
+// Componente principal del menú
+function Menu() {
+  const location = useLocation();  // Usar useLocation para obtener la ruta actual
+
+  // Función memorizada para verificar si el menú debe mostrarse
+  const shouldShowMenu = useCallback(() => {
+    console.log(location.pathname);
+    return location.pathname !== "/";
+  }, [location.pathname]);
 
   useEffect(() => {
-    setPath(window.location.pathname)
-    protectedPath()
-}, [path,protectedPath]);
-  
+    shouldShowMenu();  // Llamar a la función memorizada
+  }, [shouldShowMenu]);  // Incluir shouldShowMenu como dependencia
+
   return (
     <>
-      {protectedPath() && options.map((props, idx) => (
-        <OffCanvasExample key={idx} {...props} />
+      {shouldShowMenu() && options.map((props, idx) => (
+        <OffCanvasMenu key={idx} show={true} {...props} />
       ))}
     </>
-  )
+  );
 }
 
 export default Menu;
