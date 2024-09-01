@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo  } from 'react';
+import React, { useState, useEffect, useMemo,useCallback  } from 'react';
 import Tabla from '../tablas/tablaComponente';
 import axios from 'axios';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import {getCategoriasByPage, funCambioPaginaCategoria, setParametros as  setParametrosCategoria} from '../configuracion/CategoriaServices';
+import {getCategoriasByPage,  setParametros as  setParametrosCategoria} from '../configuracion/CategoriaServices';
 import { setParametrosFormulario } from '../configuracion/SubCategoraService';
 import { setParametros as  setParametrosProductos} from '../configuracion/ProductoServices';
 import {setParametros as setParametrosProveedor} from '../configuracion/proveedorService';
@@ -158,18 +158,17 @@ const App = () => {
   formularioProducto.url= `${process.env.REACT_APP_API_URL}productos`;
 };
 
-const cargadataCategoria = ()=> {
+const cargadataCategoria = useCallback(() => {
   axios.get(`${process.env.REACT_APP_API_URL}categoria/listar`, { headers })
-  .then(function (response) {
-    setCategoriaData( response.data);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-}
+    .then(function (response) {
+      setCategoriaData(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}, [headers]);
 
-
-const cargadataSubCategoria = () => {
+const cargadataSubCategoria = useCallback(() => {
   axios.get(`${process.env.REACT_APP_API_URL}subcategorias/listar`, { headers })
     .then(function (response) {
       setSubCategoriaData(response.data);
@@ -177,41 +176,52 @@ const cargadataSubCategoria = () => {
     .catch(function (error) {
       console.log(error);
     });
-}
+}, [headers]);
 
-const cargaDataProductos = () => {
+const cargaDataProductos = useCallback(() => {
   axios.get(`${process.env.REACT_APP_API_URL}productos/listar`, { headers })
-  .then(function (response) {
-    setProductosData(response.data);
-  })
-  .catch(function (error) {
-    console.log(error); 
-  });
-}
+    .then(function (response) {
+      setProductosData(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}, [headers]);
 
-const cargaDataProveedores = () => {
+const cargaDataProveedores = useCallback(() => {
   axios.get(`${process.env.REACT_APP_API_URL}proveedor/listar`, { headers })
-  .then(function (response) {
-    setProveedorData(response.data);
-  })
-  .catch(function (error) {
-    console.log(error); 
-  });
-}
+    .then(function (response) {
+      setProveedorData(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}, [headers]);
 
 
-  const cargadata = () =>{
-    cargadataCategoria();
-    cargadataSubCategoria();
-    cargaDataProductos();
-    cargaDataProveedores();
+const cargadata = useCallback(() => {
+  cargadataCategoria();
+  cargadataSubCategoria();
+  cargaDataProductos();
+  cargaDataProveedores();
+}, [cargadataCategoria, cargadataSubCategoria, cargaDataProductos, cargaDataProveedores]); 
 
-  }
 
-  useEffect(() => {
+useEffect(() => {
   cargadata();
-      
-  }, [headers]);
+}, [headers, cargadata]);
+
+  const cargaPaginaCategoria = (pagina) => {
+  
+
+    axios.get(`${process.env.REACT_APP_API_URL}categoria/listar?page=${pagina}`, { headers })
+    .then(function (response) {
+      setCategoriaData( response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
   return (
    
@@ -230,7 +240,7 @@ const cargaDataProveedores = () => {
               <SearchTextComponente url={formularioCategoria.url} setParametros={setParametrosCategoria} formulario={formularioCategoria}  />
           </div>
           <br></br>
-          {activeTab === 'Categoria' && <Tabla formularioProps= {formularioCategoria} data={categoriaData.lista} {...categoriaData}  funCambioPagina = {funCambioPaginaCategoria} funEliminar={funEliminar} url={formularioCategoria.url} funCargaEditar={funEditarCategoria} />}
+          {activeTab === 'Categoria' && <Tabla formularioProps= {formularioCategoria} data={categoriaData.lista} {...categoriaData}  funCambioPagina = {cargaPaginaCategoria} funEliminar={funEliminar} url={formularioCategoria.url} funCargaEditar={funEditarCategoria} />}
         </Tab>
         <Tab eventKey="SubCategoria" title="Sub-Categorías">
           <div className="input-group">

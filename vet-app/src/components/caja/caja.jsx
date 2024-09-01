@@ -24,7 +24,6 @@ const Caja = () => {
   // Función para obtener y formatear la fecha actual en el formato requerido
   const obtenerFechaActual = () => {
     const fecha = new Date();
-    const opciones = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
     return `${fecha.getFullYear()}/${String(fecha.getMonth() + 1).padStart(2, '0')}/${String(fecha.getDate()).padStart(2, '0')} ${String(fecha.getHours()).padStart(2, '0')}:${String(fecha.getMinutes()).padStart(2, '0')}:${String(fecha.getSeconds()).padStart(2, '0')}`;
   };
 

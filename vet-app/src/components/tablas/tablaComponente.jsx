@@ -82,6 +82,8 @@ const Tabla = ({
     }
   };
 
+
+
   return (
     <>
       {/* Modal recibe props para controlar el estado de apertura y cierre */}
@@ -138,8 +140,8 @@ const Tabla = ({
         {Array.from({ length: cantidadPaginas }, (_, index) => (
           <Pagination.Item
             key={index}
-            active={paginaActual === index + 1}
-            onClick={() => handlePaginaClick(index + 1)}
+            active={ paginaActual === index }
+            onClick={() => handlePaginaClick(index)}
           >
             {index + 1}
           </Pagination.Item>
