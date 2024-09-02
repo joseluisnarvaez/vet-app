@@ -4,6 +4,7 @@ import Login from './components/login/login';
 import Caja from './components/caja/caja';
 import Menu from './components/template/menu';
 import Header from './components/template/header';
+import Ventas from './components/ventas/Ventas';
 
 // Función de verificación de sesión (puedes personalizarla según tus necesidades)
 const isAuthenticated = () => {
@@ -33,7 +34,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
-          <Route path="/caja" element={<Caja />} />
+          <Route path="/caja"  element={<ProtectedRoute element={<Caja />} />} />
+          <Route path="/ventas" element={<ProtectedRoute element={<Ventas />} />}/>
         </Routes>
     </BrowserRouter>
   );

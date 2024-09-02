@@ -25,6 +25,7 @@ function OffCanvasMenu({ show, ...props }) {
             {/** Reutilización de enlaces de menú */}
             <SidebarLink to="/Dashboard" title="Dashboard" />
             <SidebarLink to="/caja" title="Caja" />
+            <SidebarLink to="/ventas" title="Ventas" />
           </ul>
         </div>
       </Nav>
