@@ -160,7 +160,7 @@ const Ventas = () => {
 
           {/* Modal para mostrar detalles de una venta */}
           {ventaSeleccionada && (
-            <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal show={showModal} onHide={handleCloseModal} size='lg'>
               <Modal.Header closeButton>
                 <Modal.Title>Detalles de la Venta #{ventaSeleccionada.id}</Modal.Title>
               </Modal.Header>
