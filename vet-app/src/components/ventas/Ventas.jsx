@@ -3,7 +3,13 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Pagination from 'react-bootstrap/Pagination';
-import axios from 'axios'; // Para realizar llamadas a la API
+import axios from 'axios';
+import { Stack, Form } from 'react-bootstrap';
+
+// Función para formatear los números como pesos chilenos
+const formatCurrencyCLP = (value) => {
+  return `$ ${value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+};
 
 const Ventas = () => {
   // Estado para almacenar las ventas
@@ -19,28 +25,58 @@ const Ventas = () => {
   // Estado para manejar la paginación
   const [paginaActual, setPaginaActual] = useState(1);
   const [cantidadPaginas, setCantidadPaginas] = useState(1);
+  // Estado para manejar el filtro por fechas
+  const [fechaDesde, setFechaDesde] = useState('');
+  const [fechaHasta, setFechaHasta] = useState('');
+  // Estado para manejar el error de validación de fechas
+  const [errorFechas, setErrorFechas] = useState(null);
+  // Estado para manejar el total de ventas
+  const [totalVentas, setTotalVentas] = useState(0);
 
   // Función para obtener las ventas desde la API
-  const fetchVentas = useCallback(async (pagina = 1) => {
-    setIsLoading(true);
-    setError(null);
+  const fetchVentas = useCallback(
+    async (pagina = 1) => {
+      setIsLoading(true);
+      setError(null);
+      setErrorFechas(null); // Reinicia el error de fechas al buscar
 
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}ventas?page=${pagina - 1}`, {
-        headers: {
-          'Authorization': localStorage.getItem('token'),
-          'Content-Type': 'application/json'
-        }
-      });
-      setVentas(response.data.lista); // Asigna las ventas al estado
-      setCantidadPaginas(response.data.cantidadPaginas); // Total de páginas para la paginación
-    } catch (error) {
-      console.error('Error al cargar las ventas:', error);
-      setError('Error al cargar las ventas. Intente nuevamente.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      // Validar si la fecha desde es mayor que la fecha hasta
+      if (fechaDesde && fechaHasta && fechaDesde > fechaHasta) {
+        setErrorFechas('La fecha de inicio no puede ser mayor que la fecha de término.');
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const params = {
+          page: pagina - 1,
+          fechaDesde: fechaDesde ? `${fechaDesde} 00:00:00` : undefined,
+          fechaHasta: fechaHasta ? `${fechaHasta} 23:59:59` : undefined,
+        };
+
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}ventas/facturas`, {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/json',
+          },
+          params: params, // Añadir parámetros de fechas si están definidos
+        });
+
+        setVentas(response.data.lista); // Asigna las ventas al estado
+        setCantidadPaginas(response.data.cantidadPaginas); // Total de páginas para la paginación
+
+        // Calcula el total de ventas
+        const total = response.data.lista.reduce((acc, venta) => acc + venta.total, 0);
+        setTotalVentas(total); // Actualiza el estado del total de ventas
+      } catch (error) {
+        console.error('Error al cargar las ventas:', error);
+        setError('Error al cargar las ventas. Intente nuevamente.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fechaDesde, fechaHasta]
+  );
 
   // Función para obtener los detalles de una venta desde la API
   const fetchDetalleVenta = useCallback(async (ventaId) => {
@@ -50,9 +86,9 @@ const Ventas = () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}ventas/${ventaId}`, {
         headers: {
-          'Authorization': localStorage.getItem('token'),
-          'Content-Type': 'application/json'
-        }
+          Authorization: localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        },
       });
       setVentaSeleccionada(response.data.facturaForm); // Asigna los detalles de la venta al estado
       setShowModal(true); // Muestra el modal con los detalles de la venta
@@ -90,6 +126,24 @@ const Ventas = () => {
   const paginaAnterior = paginaActual > 1 ? paginaActual - 1 : 1;
   const paginaSiguiente = paginaActual < cantidadPaginas ? paginaActual + 1 : cantidadPaginas;
 
+  // Función para manejar el cambio de fechas
+  const handleFechaDesdeChange = (e) => setFechaDesde(e.target.value);
+  const handleFechaHastaChange = (e) => setFechaHasta(e.target.value);
+
+  // Función para limpiar los filtros de fecha
+  const handleLimpiarFiltros = () => {
+    setFechaDesde('');
+    setFechaHasta('');
+    setErrorFechas(null);
+    setPaginaActual(1); // Reiniciar a la primera página
+    fetchVentas(1); // Recargar las ventas con todos los datos
+  };
+
+  // Función para refrescar las ventas y limpiar los filtros
+  const handleRefrescarVentas = () => {
+    handleLimpiarFiltros(); // Llama a limpiar los filtros antes de refrescar
+  };
+
   return (
     <div className="main-wrapper">
       <div className="page-wrapper">
@@ -98,13 +152,36 @@ const Ventas = () => {
             <div>
               <h4 className="mb-3 mb-md-0">Ventas</h4>
             </div>
-            <Button variant="primary" onClick={() => fetchVentas(paginaActual)} disabled={isLoading}>
+            <Button variant="primary" onClick={handleRefrescarVentas} disabled={isLoading}>
               {isLoading ? 'Cargando...' : 'Refrescar Ventas'}
             </Button>
           </div>
 
+          {/* Filtro por fechas */}
+          <div className="d-flex justify-content-start align-items-center mb-3">
+            <Form.Group controlId="fechaDesde">
+              <Form.Label>Fecha Desde:</Form.Label>
+              <Form.Control type="date" value={fechaDesde} onChange={handleFechaDesdeChange} />
+            </Form.Group>
+            <Form.Group controlId="fechaHasta" className="ms-3">
+              <Form.Label>Fecha Hasta:</Form.Label>
+              <Form.Control type="date" value={fechaHasta} onChange={handleFechaHastaChange} />
+            </Form.Group>
+            <Button variant="secondary" className="ms-3 mt-4" onClick={handleLimpiarFiltros}>
+              Limpiar Filtros
+            </Button>
+          </div>
+
+          {/* Mostrar error de fechas si existe */}
+          {errorFechas && <div className="alert alert-warning mt-3">{errorFechas}</div>}
+
           {/* Mostrar error si existe */}
           {error && <div className="alert alert-danger mt-3">{error}</div>}
+
+          {/* Mostrar total de ventas */}
+          <div className="mb-3">
+            <h6>Total de Ventas: {formatCurrencyCLP(totalVentas)}</h6>
+          </div>
 
           {/* Tabla de ventas */}
           <div className="row">
@@ -125,8 +202,8 @@ const Ventas = () => {
                       {ventas.map((venta) => (
                         <tr key={venta.id}>
                           <td>{venta.id}</td>
-                          <td>{new Date(venta.fecha).toLocaleDateString()}</td>
-                          <td>${venta.total.toFixed(2)}</td>
+                          <td>{venta.fecha}</td>
+                          <td>{formatCurrencyCLP(venta.total)}</td>
                           <td>
                             <Button variant="primary" onClick={() => handleVerDetalle(venta.id)}>
                               Ver Detalle
@@ -160,12 +237,14 @@ const Ventas = () => {
 
           {/* Modal para mostrar detalles de una venta */}
           {ventaSeleccionada && (
-            <Modal show={showModal} onHide={handleCloseModal} size='lg'>
+            <Modal show={showModal} onHide={handleCloseModal} size="lg">
               <Modal.Header closeButton>
                 <Modal.Title>Detalles de la Venta #{ventaSeleccionada.id}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <p><strong>Fecha:</strong> {ventaSeleccionada.fecha}</p>
+                <p>
+                  <strong>Fecha:</strong> {ventaSeleccionada.fecha}
+                </p>
                 <Table responsive striped bordered hover>
                   <thead>
                     <tr>
@@ -180,13 +259,31 @@ const Ventas = () => {
                       <tr key={producto.idProducto}>
                         <td>{producto.glosaProducto}</td>
                         <td>{producto.cantidad}</td>
-                        <td>${producto.precioUnitario.toFixed(2)}</td>
-                        <td>${(producto.cantidad * producto.precioUnitario).toFixed(2)}</td>
+                        <td>{formatCurrencyCLP(producto.precioUnitario)}</td>
+                        <td>{formatCurrencyCLP(producto.cantidad * producto.precioUnitario)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </Table>
-                <p><strong>Total Venta:</strong> ${ventaSeleccionada.total.toFixed(2)}</p>
+
+                <br />
+                <Stack gap={3}>
+                  <div className="p-2">
+                    <p>
+                      <strong>Total </strong> {formatCurrencyCLP(ventaSeleccionada.total - ventaSeleccionada.iva)}
+                    </p>
+                  </div>
+                  <div className="p-2">
+                    <p>
+                      <strong>Total Iva:</strong> {formatCurrencyCLP(ventaSeleccionada.iva)}
+                    </p>
+                  </div>
+                  <div className="p-2">
+                    <p>
+                      <strong>Total Venta:</strong> {formatCurrencyCLP(ventaSeleccionada.total)}
+                    </p>
+                  </div>
+                </Stack>
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleCloseModal}>

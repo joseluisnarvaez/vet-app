@@ -7,6 +7,11 @@ const getHeaders = () => ({
   'Content-Type': 'application/json'
 });
 
+// Función para formatear los números como pesos chilenos
+const formatCurrencyCLP = (value) => {
+  return `$ ${value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+};
+
 const Caja = () => {
   // Estado para la entrada de búsqueda
   const [busqueda, setBusqueda] = useState('');
@@ -132,6 +137,7 @@ const Caja = () => {
         precioUnitario: item.precio,
         subtotal: item.precio * item.cantidad,
       })),
+      iva: calcularIVA(),
       total: calcularTotal(),
     };
 
@@ -210,7 +216,7 @@ const Caja = () => {
                     <ul className="list-group">
                       {productos.map((producto) => (
                         <li key={producto.id} className="list-group-item d-flex justify-content-between align-items-center">
-                          {producto.nombre} - ${producto.precio}
+                          {producto.nombre} - {formatCurrencyCLP(producto.precio)}
                           <Button variant="success" onClick={() => agregarAlCarrito(producto)}>
                             Agregar al carrito
                           </Button>
@@ -245,7 +251,7 @@ const Caja = () => {
                                   <tr key={producto.id}>
                                     <td>{producto.id}</td>
                                     <td>{producto.nombre}</td>
-                                    <td>${producto.precio}</td>
+                                    <td>{formatCurrencyCLP(producto.precio)}</td>
                                     <td>
                                       <input
                                         type="number"
@@ -279,15 +285,15 @@ const Caja = () => {
                           </div>
                           <div className="mt-3">
                             <label className="tx-11 fw-bolder mb-0 text-uppercase"> Sub Total: </label>
-                            <p className="text-muted">$ {calcularSubtotal().toFixed(2)}</p>
+                            <p className="text-muted">{formatCurrencyCLP(calcularSubtotal())}</p>
                           </div>
                           <div className="mt-3 mb-3">
                             <label className="tx-11 fw-bolder mb-0 text-uppercase">IVA:</label>
-                            <p className="text-muted">$ {calcularIVA().toFixed(2)}</p>
+                            <p className="text-muted">{formatCurrencyCLP(calcularIVA())}</p>
                           </div>
                           <div className="mt-3 pb-2 border-bottom">
                             <label className="tx-11 fw-bolder mb-0 text-uppercase">Total a Pagar:</label>
-                            <p className="text-muted">$ {calcularTotal().toFixed(2)}</p>
+                            <p className="text-muted">{formatCurrencyCLP(calcularTotal())}</p>
                           </div>
                           <div className="mt-3 d-grid gap-2">
                             <Button variant="primary" onClick={handlePagar}>Pagar</Button>
