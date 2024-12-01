@@ -5,6 +5,7 @@ import Caja from './components/caja/caja';
 import Menu from './components/template/menu';
 import Header from './components/template/header';
 import Ventas from './components/ventas/Ventas';
+import ZaritSurvey from './components/zarit/ZaritSurvey';
 
 // Función de verificación de sesión (puedes personalizarla según tus necesidades)
 const isAuthenticated = () => {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
           <Route path="/caja"  element={<ProtectedRoute element={<Caja />} />} />
           <Route path="/ventas" element={<ProtectedRoute element={<Ventas />} />}/>
+          <Route path="/zarit" element={<ZaritSurvey />}/>
         </Routes>
     </BrowserRouter>
   );
