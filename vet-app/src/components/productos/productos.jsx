@@ -7,7 +7,8 @@ import {getCategoriasByPage,  setParametros as  setParametrosCategoria} from '..
 import { setParametrosFormulario } from '../configuracion/SubCategoraService';
 import { setParametros as  setParametrosProductos} from '../configuracion/ProductoServices';
 import {setParametros as setParametrosProveedor} from '../configuracion/proveedorService';
-import { formularioCategoria, formularioSubCategoria , formularioProducto, formularioProveedor} from '../configuracion/formularios';
+import {setParametrosLote} from '../configuracion/LoteService';
+import { formularioCategoria, formularioSubCategoria , formularioProducto, formularioProveedor, formularioLote} from '../configuracion/formularios';
 import SearchTextComponente from '../searchText/searchText';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
   const [activeTab, setActiveTab] = useState('Categoria'); // Estado para rastrear la pestaña activa
   const [productosData, setProductosData] = useState({}); 
   const [proveedorData, setProveedorData] = useState({}); 
+  const [loteData, setLoteData] = useState({}); 
   const token = localStorage.getItem('token');
   const headers = useMemo(() => ({
     'Authorization': token,
@@ -26,11 +28,25 @@ const App = () => {
   const funCambioPaginaProveedor = (pagina) => {
     pagina = pagina-1;
     console.log(pagina);
-    const url = `${process.env.REACT_APP_API_URL}productos/listar?page=${pagina}`;
+    const url = `${process.env.REACT_APP_API_URL}proveedor/listar?page=${pagina}`;
     console.log(url);
     axios.get(url, { headers })
       .then(function (response) {
-        setProductosData(response.data);
+        setProveedorData(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const funCambioPaginaLote = (pagina) => {
+    pagina = pagina-1;
+    console.log(pagina);
+    const url = `${process.env.REACT_APP_API_URL}lotes/listar?page=${pagina}`;
+    console.log(url);
+    axios.get(url, { headers })
+      .then(function (response) {
+        setLoteData(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -83,7 +99,6 @@ const App = () => {
   
     return eliminado;
   }
-
     
   async function  funCargaEditar(apiUrl, headers)   {
     try {
@@ -121,6 +136,10 @@ const App = () => {
   formularioProveedor.url= `${process.env.REACT_APP_API_URL}proveedor`;  
   formularioProveedor.show = false;
 
+  formularioLote.updateTabla = (pagina) => {  cargaDataLotes();};
+  formularioLote.url= `${process.env.REACT_APP_API_URL}lotes`;  
+  formularioLote.show = false;
+
   const funEditarCategoria  = async (id, url) => {
     const apiUrl = url +'/'+ id;
 
@@ -146,6 +165,15 @@ const App = () => {
   console.log(data);
   setParametrosProveedor(data,formularioProveedor)
   formularioProveedor.url= `${process.env.REACT_APP_API_URL}proveedor`;
+};
+
+const funEditarLote  = async (id, url) => {
+  const apiUrl = url +'/'+ id;
+
+  const data = await funCargaEditar(apiUrl, headers);
+  console.log(data);
+  setParametrosLote(data,formularioLote)
+  formularioLote.url= `${process.env.REACT_APP_API_URL}lotes`;
 };
 
  const funEditarProducto  = async (id, url) => {
@@ -199,12 +227,24 @@ const cargaDataProveedores = useCallback(() => {
 }, [headers]);
 
 
+const cargaDataLotes = useCallback(() => {
+  axios.get(`${process.env.REACT_APP_API_URL}lotes/listar`, { headers })
+    .then(function (response) {
+      setLoteData(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}, [headers]);
+
+
 const cargadata = useCallback(() => {
   cargadataCategoria();
   cargadataSubCategoria();
   cargaDataProductos();
   cargaDataProveedores();
-}, [cargadataCategoria, cargadataSubCategoria, cargaDataProductos, cargaDataProveedores]); 
+  cargaDataLotes();
+}, [cargadataCategoria, cargadataSubCategoria, cargaDataProductos, cargaDataProveedores, cargaDataLotes]); 
 
 
 useEffect(() => {
@@ -271,6 +311,16 @@ useEffect(() => {
           </div>
           <br></br>
           {activeTab === 'Proveedor' && <Tabla formularioProps= {formularioProveedor}  data={proveedorData.lista} {...proveedorData}   funCambioPagina = {funCambioPaginaProveedor} funEliminar={funEliminar} url={formularioProveedor.url} funCargaEditar={funEditarProveedor}/>}
+        </Tab>
+        <Tab eventKey="Lote" title="Lote">
+        <div className="input-group">
+            <div className="input-group-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+              <SearchTextComponente url={formularioLote.url} setParametros={setParametrosLote} formulario={formularioLote}  />
+          </div>
+          <br></br>
+          {activeTab === 'Lote' && <Tabla formularioProps= {formularioLote}  data={loteData.lista} {...loteData}   funCambioPagina = {funCambioPaginaLote} funEliminar={funEliminar} url={formularioLote.url} funCargaEditar={funEditarLote}/>}
         </Tab>
       </Tabs>
       

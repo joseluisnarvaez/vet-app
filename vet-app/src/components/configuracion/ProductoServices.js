@@ -18,3 +18,15 @@
     formularioProducto.formulario[14].value = data.id; 
   
   }
+
+  // Función para obtener subcategorías de una categoría específica
+export const obtenerSubcategorasDeCategoria = async () => {
+  const apiUrl = `${process.env.REACT_APP_API_URL}subcategorias/categoria/${idCategoria}`;
+  try {
+    const response = await axios.get(apiUrl, { headers: getHeaders() });
+    return response.data; // Devuelve los datos directamente
+  } catch (error) {
+    console.error('Error al obtener subcategorías:', error);
+    throw error; // Lanza el error para manejarlo en el componente
+  }
+};

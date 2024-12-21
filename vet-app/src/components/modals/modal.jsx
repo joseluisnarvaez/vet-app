@@ -70,6 +70,14 @@ const ModalComponente = ({ editar, formulario, onClose }) => {
     }
     apagarAlerta();
   };
+  const formatToYYYYMMDD = (isoString) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   // Función para apagar la alerta después de un tiempo
   const apagarAlerta = () => {
@@ -125,13 +133,13 @@ const ModalComponente = ({ editar, formulario, onClose }) => {
                           onChange={handleFormChange}
                         />
                       )}
-                      {(form.type === 'text' || form.type === 'hidden' || form.type === 'number') && (
+                      {(form.type === 'text' || form.type === 'hidden' || form.type === 'number' || form.type === 'date') && (
                         <Form.Control
                           type={form.type}
                           name={form.name}
                           className="form-control"
                           placeholder={form.placeholder}
-                          value={formData[form.name] || ''}
+                          value={form.type === 'date' ? (formatToYYYYMMDD(formData[form.name]) || '') : formData[form.name] || ''}
                           onChange={handleFormChange}
                         />
                       )}

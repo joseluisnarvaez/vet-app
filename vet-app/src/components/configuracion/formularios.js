@@ -278,3 +278,59 @@ export const formularioProveedor = {
 
   ]
 };
+
+
+export const formularioLote = {
+  nameButton: 'Agregar Lote',
+  title: 'Agregar Lote',
+  titleEditar: 'Editar Lote',
+  nameButtonEditar: 'Editar Lote',
+  titleModal: 'Lote',
+  formulario: [
+    {
+      label: 'Numero de Lote',
+      name: 'numLote',
+      type: 'text',
+      placeholder: 'Ingrese el Numero de lote',
+      value: ''
+    },
+    {
+      label: 'Fecha Creacion',
+      name: 'fechaCreacion',
+      type: 'date',
+      placeholder: 'Ingrese fecha Creacion',
+      value: ''
+    },
+    {
+      label: 'Fecha Vencimiento',
+      type: 'date',
+      name: 'fechaVencimiento',
+      placeholder: 'Ingrese Fecha Vencimiento',
+      value: ''
+    },
+    {
+      label: 'Stock Producto',
+      type: 'number',
+      name: 'stockProducto',
+      placeholder: 'Ingrese Stock Producto',
+      value: ''
+    },
+    {
+      label: 'Seleccione Producto Asociado',
+      name: 'idProducto',
+      type: 'select',
+      placeholder: 'Ingrese Producto Asociado',
+      value: '',
+      valueDependecy: '',
+      loadValues:(id) => new Promise((res) => {
+        res(obtenerSubcategorasDeCategoria(id))
+      })
+    },
+    {
+      name: 'id',
+      type: 'hidden',
+      value: ''
+    },
+
+  ]
+};
