@@ -53,8 +53,12 @@ const SearchTextComponente = ({url, setParametros, formulario}) =>{
       try{
         const response = await axios.get(consultaURL);
         const { data } = response;
-        console.log(data);
-        setOptions(data);
+        const productosConNombre = data.map((producto) => ({
+          ...producto,
+          nombre: producto.nombre || producto.numLote || 'Sin nombre'  // Valor por defecto
+        }));
+        console.log(productosConNombre);
+        setOptions(productosConNombre);
         setIsLoading(false);
       } catch (error){
         console.error(error);
